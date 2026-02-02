@@ -20,7 +20,9 @@ const ecsClient = new ECSClient({
 
 app.post('/build',async (req,res)=>{
     const {gitUrl}= req.body;
-    const projectId = "rakesh";
+
+    // add this project id all thing working fine 
+    // const projectId = "rakesh";
 
     const runTaskcmd=   new RunTaskCommand({
         cluster: process.env.CLUSTER_ARN,
