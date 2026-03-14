@@ -2,9 +2,13 @@ import express from 'express';
 import {ECSClient,RunTaskCommand} from '@aws-sdk/client-ecs';
 import dotenv from "dotenv";
 import { nanoid } from 'nanoid';
+import cors from 'cors';
+
+
 dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 9000;
+app.use(cors());
 
 
 app.use(express.json());
@@ -19,7 +23,7 @@ const ecsClient = new ECSClient({
 
 
 app.post('/build',async (req,res)=>{
-    const {gitUrl}= req.body;
+    const {gitUrl,projectId}= req.body;
 
     // add this project id all thing working fine 
     // const projectId = "rakesh";

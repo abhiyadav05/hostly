@@ -1,6 +1,25 @@
+import axios from "axios";
+import react, { useState } from "react";
 
 export default function Example() {
+       const [projectId, setProjectId] = useState("");
+       const [gitUrl, setGitUrl] = useState("");
+       const [description, setDescription] = useState("");
 
+       const handleSubmit = async (e: react.FormEvent) => {
+        e.preventDefault();
+
+        try {
+            const response = await axios.post("http://localhost:9000/build", {
+                projectId,
+                gitUrl,
+                description,
+            });
+            console.log("Deployment initiated:", response.data);
+        } catch (error) {
+            console.error("Error initiating deployment:", error);
+        }
+         };
     
     return (
         <>
@@ -35,6 +54,8 @@ export default function Example() {
                             <input 
                                 type="text" 
                                 required
+                                value={projectId}
+                                onChange={(e) => setProjectId(e.target.value)}
                                 placeholder="Eden Johnson" 
                                 className='w-full bg-[#00A63E]/5 border border-white/20 rounded-lg px-4 py-3 text-white/40 placeholder:text-white/40 placeholder:text-sm focus:outline-none focus:border-green-600 transition'
                             />
@@ -45,6 +66,8 @@ export default function Example() {
                             <input 
                                 type="url" 
                                 required
+                                value={gitUrl}
+                                onChange={(e) => setGitUrl(e.target.value)}
                                 placeholder="https://github.com/username/repository" 
                                 className='w-full bg-[#00A63E]/5 border border-white/20 rounded-lg px-4 py-3 text-white/40 placeholder:text-white/40 placeholder:text-sm focus:outline-none focus:border-green-600 transition'
                             />
@@ -56,6 +79,8 @@ export default function Example() {
                                 placeholder="Briefly describe your project..." 
                                 rows={4}
                                 required
+                                value={description}
+                                onChange={(e) => setDescription(e.target.value)}
                                 className='w-full bg-[#00A63E]/5 border border-white/20 rounded-lg px-4 py-3 text-white/40 placeholder:text-white/40 placeholder:text-sm focus:outline-none focus:border-green-600 transition resize-none'
                             ></textarea>
                         </div>
@@ -64,7 +89,7 @@ export default function Example() {
                             <p className='text-xs md:text-sm text-white/60 max-w-3xs'>
                                 By submitting, you agree to our <span className='text-white'>Terms</span> and <span className='text-white'>Privacy Policy</span>.
                             </p>
-                            <button type="submit" className='bg-linear-to-r from-green-950 to-green-600 hover:from-green-600 hover:to-green-950 text-white text-sm px-8 md:px-16 py-3 rounded-full transition duration-300 cursor-pointer'>
+                            <button onClick={handleSubmit}   type="submit" className='bg-linear-to-r from-green-950 to-green-600 hover:from-green-600 hover:to-green-950 text-white text-sm px-8 md:px-16 py-3 rounded-full transition duration-300 cursor-pointer'>
                                 Submit
                             </button>
                         </div>
