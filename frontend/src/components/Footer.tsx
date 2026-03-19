@@ -1,5 +1,3 @@
-import react from "react";
-
 export default function Footer() {
   return (
     <footer className="relative overflow-hidden border-t border-white/10 bg-black/90 py-6 text-xs text-white/60">
@@ -16,7 +14,12 @@ export default function Footer() {
           <p className="text-[11px] text-white/50">
             Deploy from GitHub in minutes with zero manual setup.
           </p>
+           
         </div>
+
+        <div className="text-[15px] text-white/40">
+              Built by <span className="text-green-300/80">Abhishek Yadav</span>
+            </div>
 
         <div className="flex items-center gap-5 text-[11px]">
           <button className="transition-all duration-300 hover:-translate-y-0.5 hover:text-green-300">

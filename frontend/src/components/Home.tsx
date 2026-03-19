@@ -1,10 +1,18 @@
 import axios from "axios";
+import { useAuth } from "@clerk/react";
 import react, { useState } from "react";
 
-export default function Example() {
+interface HomeProps {
+  onLogin: () => void;
+  onSignup: () => void;
+}
+
+export default function Home({ onLogin, onSignup }: HomeProps) {
        const [projectId, setProjectId] = useState("");
        const [gitUrl, setGitUrl] = useState("");
        const [description, setDescription] = useState("");
+
+      const { isLoaded, isSignedIn } = useAuth();
 
        const handleSubmit = async (e: react.FormEvent) => {
         e.preventDefault();
@@ -45,55 +53,95 @@ export default function Example() {
                     </div>
                     <h1 className='font-medium text-3xl md:text-5xl/15 bg-linear-to-r max-md:mx-auto from-white to-green-300 bg-clip-text text-transparent max-w-[470px] mt-4'>Ready to Deploy Your Website?</h1>
                     <p className='text-sm/6 text-white max-w-[345px] mt-4 mx-auto md:mx-0'>Get started with our easy-to-use deployment platform and launch your website in minutes by providing your GitHub repository URL.</p> 
+
                 </div>
                         
                 <div className='w-full max-w-lg max-md:mx-auto bg-[#00A63E]/0 backdrop-blur-sm border border-white/10 rounded-xl p-8'>
-                    <form className='space-y-6'>
+                    {isLoaded && isSignedIn ? (
+                      <form className="space-y-6">
                         <div>
-                            <label className='block text-white text-sm mb-2'>Project Name</label>
-                            <input 
-                                type="text" 
-                                required
-                                value={projectId}
-                                onChange={(e) => setProjectId(e.target.value)}
-                                placeholder="Eden Johnson" 
-                                className='w-full bg-[#00A63E]/5 border border-white/20 rounded-lg px-4 py-3 text-white/40 placeholder:text-white/40 placeholder:text-sm focus:outline-none focus:border-green-600 transition'
-                            />
+                          <label className="block text-white text-sm mb-2">
+                            Project Name
+                          </label>
+                          <input
+                            type="text"
+                            required
+                            value={projectId}
+                            onChange={(e) => setProjectId(e.target.value)}
+                            placeholder="Eden Johnson"
+                            className="w-full bg-[#00A63E]/5 border border-white/20 rounded-lg px-4 py-3 text-white/40 placeholder:text-white/40 placeholder:text-sm focus:outline-none focus:border-green-600 transition"
+                          />
                         </div>
-            
+
                         <div>
-                            <label className='block text-white text-sm mb-2'>GitHub URL</label>
-                            <input 
-                                type="url" 
-                                required
-                                value={gitUrl}
-                                onChange={(e) => setGitUrl(e.target.value)}
-                                placeholder="https://github.com/username/repository" 
-                                className='w-full bg-[#00A63E]/5 border border-white/20 rounded-lg px-4 py-3 text-white/40 placeholder:text-white/40 placeholder:text-sm focus:outline-none focus:border-green-600 transition'
-                            />
+                          <label className="block text-white text-sm mb-2">
+                            GitHub URL
+                          </label>
+                          <input
+                            type="url"
+                            required
+                            value={gitUrl}
+                            onChange={(e) => setGitUrl(e.target.value)}
+                            placeholder="https://github.com/username/repository"
+                            className="w-full bg-[#00A63E]/5 border border-white/20 rounded-lg px-4 py-3 text-white/40 placeholder:text-white/40 placeholder:text-sm focus:outline-none focus:border-green-600 transition"
+                          />
                         </div>
-            
+
                         <div>
-                            <label className='block text-white text-sm mb-2'>Describe Your Project</label>
-                            <textarea 
-                                placeholder="Briefly describe your project..." 
-                                rows={4}
-                                required
-                                value={description}
-                                onChange={(e) => setDescription(e.target.value)}
-                                className='w-full bg-[#00A63E]/5 border border-white/20 rounded-lg px-4 py-3 text-white/40 placeholder:text-white/40 placeholder:text-sm focus:outline-none focus:border-green-600 transition resize-none'
-                            ></textarea>
+                          <label className="block text-white text-sm mb-2">
+                            Describe Your Project
+                          </label>
+                          <textarea
+                            placeholder="Briefly describe your project..."
+                            rows={4}
+                            required
+                            value={description}
+                            onChange={(e) => setDescription(e.target.value)}
+                            className="w-full bg-[#00A63E]/5 border border-white/20 rounded-lg px-4 py-3 text-white/40 placeholder:text-white/40 placeholder:text-sm focus:outline-none focus:border-green-600 transition resize-none"
+                          ></textarea>
                         </div>
-            
-                        <div className='flex items-center justify-between'>
-                            <p className='text-xs md:text-sm text-white/60 max-w-3xs'>
-                                By submitting, you agree to our <span className='text-white'>Terms</span> and <span className='text-white'>Privacy Policy</span>.
-                            </p>
-                            <button onClick={handleSubmit}   type="submit" className='bg-linear-to-r from-green-950 to-green-600 hover:from-green-600 hover:to-green-950 text-white text-sm px-8 md:px-16 py-3 rounded-full transition duration-300 cursor-pointer'>
-                                Submit
-                            </button>
+
+                        <div className="flex items-center justify-between">
+                          <p className="text-xs md:text-sm text-white/60 max-w-3xs">
+                            By submitting, you agree to our{" "}
+                            <span className="text-white">Terms</span> and{" "}
+                            <span className="text-white">Privacy Policy</span>.
+                          </p>
+                          <button
+                            onClick={handleSubmit}
+                            type="submit"
+                            className="bg-linear-to-r from-green-950 to-green-600 hover:from-green-600 hover:to-green-950 text-white text-sm px-8 md:px-16 py-3 rounded-full transition duration-300 cursor-pointer"
+                          >
+                            Submit
+                          </button>
                         </div>
-                    </form>
+                      </form>
+                    ) : (
+                      <div className="space-y-3 text-center">
+                        <p className="text-sm text-white/70">
+                          Sign in to deploy your GitHub project.
+                        </p>
+                        <p className="text-xs text-white/50">
+                          Once authenticated, the GitHub URL form will appear automatically.
+                        </p>
+                        <div className="pt-2 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
+                          <button
+                            type="button"
+                            onClick={onLogin}
+                            className="w-full sm:w-auto rounded-full border border-white/15 bg-white/5 px-8 py-2.5 text-sm text-white/80 transition duration-300 hover:border-green-500/60 hover:bg-white/10 hover:text-white"
+                          >
+                            Login
+                          </button>
+                          <button
+                            type="button"
+                            onClick={onSignup}
+                            className="w-full sm:w-auto rounded-full bg-linear-to-r from-green-950 to-green-600 px-8 py-2.5 text-sm text-white transition duration-300 hover:from-green-600 hover:to-green-950"
+                          >
+                            Sign up
+                          </button>
+                        </div>
+                      </div>
+                    )}
                 </div>
             </section>
         </>

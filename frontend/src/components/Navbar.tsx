@@ -1,5 +1,5 @@
 import { CloudUpload, LogIn, UserPlus } from "lucide-react";
-import react from "react";
+import { SignOutButton, UserButton, useAuth } from "@clerk/react";
 
 type View = "home" | "login" | "signup";
 
@@ -9,6 +9,7 @@ interface NavbarProps {
 }
 
 export default function Navbar({ currentView, onChangeView }: NavbarProps) {
+  const { isLoaded, isSignedIn } = useAuth();
   const navItemClasses = (active: boolean) =>
     `flex items-center gap-1.5 px-4 py-2 rounded-full text-xs md:text-sm transition-all duration-300 cursor-pointer ${
       active
@@ -43,36 +44,72 @@ export default function Navbar({ currentView, onChangeView }: NavbarProps) {
               <span>Deploy</span>
             </button>
 
-            <button
-              className={navItemClasses(currentView === "login")}
-              onClick={() => onChangeView("login")}
-            >
-              <LogIn className="size-3.5" />
-              <span>Login</span>
-            </button>
+            {!isLoaded || !isSignedIn ? (
+              <>
+                <button
+                  className={navItemClasses(currentView === "login")}
+                  onClick={() => onChangeView("login")}
+                >
+                  <LogIn className="size-3.5" />
+                  <span>Login</span>
+                </button>
 
-            <button
-              className={navItemClasses(currentView === "signup")}
-              onClick={() => onChangeView("signup")}
-            >
-              <UserPlus className="size-3.5" />
-              <span>Sign up</span>
-            </button>
+                <button
+                  className={navItemClasses(currentView === "signup")}
+                  onClick={() => onChangeView("signup")}
+                >
+                  <UserPlus className="size-3.5" />
+                  <span>Sign up</span>
+                </button>
+              </>
+            ) : (
+              <>
+                <div className="flex items-center gap-2">
+                  <SignOutButton redirectUrl="/">
+                    <button
+                      type="button"
+                      className={navItemClasses(false)}
+                      aria-label="Logout"
+                    >
+                      Logout
+                    </button>
+                  </SignOutButton>
+                  <UserButton />
+                </div>
+              </>
+            )}
           </div>
 
           <div className="flex items-center gap-2 md:hidden">
-            <button
-              className={navItemClasses(currentView === "login")}
-              onClick={() => onChangeView("login")}
-            >
-              <LogIn className="size-3.5" />
-            </button>
-            <button
-              className={navItemClasses(currentView === "signup")}
-              onClick={() => onChangeView("signup")}
-            >
-              <UserPlus className="size-3.5" />
-            </button>
+            {!isLoaded || !isSignedIn ? (
+              <>
+                <button
+                  className={navItemClasses(currentView === "login")}
+                  onClick={() => onChangeView("login")}
+                >
+                  <LogIn className="size-3.5" />
+                </button>
+                <button
+                  className={navItemClasses(currentView === "signup")}
+                  onClick={() => onChangeView("signup")}
+                >
+                  <UserPlus className="size-3.5" />
+                </button>
+              </>
+            ) : (
+              <>
+                <SignOutButton redirectUrl="/">
+                  <button
+                    type="button"
+                    className={navItemClasses(false)}
+                    aria-label="Logout"
+                  >
+                    Logout
+                  </button>
+                </SignOutButton>
+                <UserButton />
+              </>
+            )}
           </div>
         </div>
       </nav>
