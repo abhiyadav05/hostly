@@ -23,7 +23,7 @@ export default function Navbar({ currentView, onChangeView }: NavbarProps) {
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-2">
             <div className="flex size-8 items-center justify-center rounded-full bg-amber-50 shadow-[0_0_25px_rgba(34,197,94,0.8)]">
-              <img src="./src/assets/Hostly-Logo.png" alt="Hostly Logo" className="size-5 text-white" />
+              <img src="Hostly-Logo.png" alt="Hostly Logo" className="size-5 text-white" />
             </div>
             <div className="leading-tight">
               <p className="text-xs font-semibold uppercase tracking-[0.25em] text-green-300/90">
