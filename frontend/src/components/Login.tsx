@@ -84,7 +84,7 @@ export default function Login() {
             Continue to Login
           </button>
 
-          {shouldRedirect && <RedirectToSignIn forceRedirectUrl="/" />}
+          {shouldRedirect && <RedirectToSignIn redirectUrl="/" />}
         </div>
       </div>
     </section>
