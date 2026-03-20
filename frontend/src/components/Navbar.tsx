@@ -1,4 +1,4 @@
-import { CloudUpload, LogIn, UserPlus } from "lucide-react";
+import { LogIn, UserPlus } from "lucide-react";
 import { SignOutButton, UserButton, useAuth } from "@clerk/react";
 
 type View = "home" | "login" | "signup";
@@ -22,8 +22,8 @@ export default function Navbar({ currentView, onChangeView }: NavbarProps) {
       <nav className="mx-auto mt-4 max-w-6xl rounded-full border border-white/10 bg-black/70 px-4 py-2.5 backdrop-blur-xl shadow-[0_0_40px_rgba(0,0,0,0.8)] transition-all duration-500">
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-2">
-            <div className="flex size-8 items-center justify-center rounded-full bg-green-600/90 shadow-[0_0_25px_rgba(34,197,94,0.8)]">
-              <CloudUpload className="size-4 text-white" />
+            <div className="flex size-8 items-center justify-center rounded-full bg-amber-50 shadow-[0_0_25px_rgba(34,197,94,0.8)]">
+              <img src="./src/assets/Hostly-Logo.png" alt="Hostly Logo" className="size-5 text-white" />
             </div>
             <div className="leading-tight">
               <p className="text-xs font-semibold uppercase tracking-[0.25em] text-green-300/90">
