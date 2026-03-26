@@ -3,6 +3,7 @@ import {ECSClient,RunTaskCommand} from '@aws-sdk/client-ecs';
 import dotenv from "dotenv";
 import { nanoid } from 'nanoid';
 import cors from 'cors';
+import slugify from 'slugify';
 
 
 dotenv.config();
@@ -21,12 +22,18 @@ const ecsClient = new ECSClient({
     }
 })
 
+function createUniqueSlug(title) {
+    const baseSlug = slugify(title, { lower: true, strict: true });
+    const uniqueId = nanoid(4).toLowerCase();
+    return `${baseSlug}-${uniqueId}`;
+  }
+
 
 app.post('/build',async (req,res)=>{
     const {gitUrl,projectId}= req.body;
 
     // add this project id all thing working fine 
-    // const projectId = "rakesh";
+    const newProjectId = createUniqueSlug(projectId);
 
     const runTaskcmd=   new RunTaskCommand({
         cluster: process.env.CLUSTER_ARN,
@@ -50,7 +57,7 @@ app.post('/build',async (req,res)=>{
                     },
                     {
                         name : 'PROJECT_ID',
-                        value : projectId,
+                        value : newProjectId,
                     },
                     {
                         name :'S3_BUCKET_NAME',
@@ -79,7 +86,7 @@ app.post('/build',async (req,res)=>{
         status : 'built',
         data : {
             projectId,
-            url : `http://${projectId}.localhost:3000`
+            url : `http://${newProjectId}.localhost:3000`
         }
     })
 })

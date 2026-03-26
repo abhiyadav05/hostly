@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useAuth } from "@clerk/react";
-import react, { useState } from "react";
+import { useState, type FormEvent } from "react";
+import Pop from "./Pop";
 
 interface HomeProps {
   onLogin: () => void;
@@ -11,21 +12,52 @@ export default function Home({ onLogin, onSignup }: HomeProps) {
        const [projectId, setProjectId] = useState("");
        const [gitUrl, setGitUrl] = useState("");
        const [description, setDescription] = useState("");
+       const [deployment, setDeployment] = useState<{
+         projectId: string;
+         url: string;
+       } | null>(null);
+       const [submitError, setSubmitError] = useState<string | null>(null);
+       const [isSubmitting, setIsSubmitting] = useState(false);
 
       const { isLoaded, isSignedIn } = useAuth();
 
-       const handleSubmit = async (e: react.FormEvent) => {
+       const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
+        if (isSubmitting) return;
+        setSubmitError(null);
+        setIsSubmitting(true);
+
         try {
-            const response = await axios.post("http://localhost:9000/build", {
+            const backendUrl = import.meta.env.VITE_BACKEND_URL;
+            console.log(backendUrl);
+            const response = await axios.post(`${backendUrl}/build`, {
                 projectId,
                 gitUrl,
                 description,
             });
-            console.log("Deployment initiated:", response.data);
+
+            const result = response.data?.data as
+              | { projectId?: string; url?: string }
+              | undefined;
+            if (!result?.url) throw new Error("Invalid response from server.");
+
+            setDeployment({
+              projectId: result.projectId ?? projectId,
+              url: result.url,
+            });
+
+            setProjectId("");
+            setGitUrl("");
+            setDescription("");
         } catch (error) {
-            console.error("Error initiating deployment:", error);
+            const message =
+              (error as any)?.response?.data?.message ||
+              (error as any)?.message ||
+              "Error initiating deployment.";
+            setSubmitError(message);
+        } finally {
+          setIsSubmitting(false);
         }
          };
     
@@ -58,7 +90,7 @@ export default function Home({ onLogin, onSignup }: HomeProps) {
                         
                 <div className='w-full max-w-lg max-md:mx-auto bg-[#00A63E]/0 backdrop-blur-sm border border-white/10 rounded-xl p-8'>
                     {isLoaded && isSignedIn ? (
-                      <form className="space-y-6">
+                      <form className="space-y-6" onSubmit={handleSubmit}>
                         <div>
                           <label className="block text-white text-sm mb-2">
                             Project Name
@@ -108,13 +140,17 @@ export default function Home({ onLogin, onSignup }: HomeProps) {
                             <span className="text-white">Privacy Policy</span>.
                           </p>
                           <button
-                            onClick={handleSubmit}
                             type="submit"
-                            className="bg-linear-to-r from-green-950 to-green-600 hover:from-green-600 hover:to-green-950 text-white text-sm px-8 md:px-16 py-3 rounded-full transition duration-300 cursor-pointer"
+                            disabled={isSubmitting}
+                            className="bg-linear-to-r from-green-950 to-green-600 hover:from-green-600 hover:to-green-950 text-white text-sm px-8 md:px-16 py-3 rounded-full transition duration-300 cursor-pointer disabled:cursor-not-allowed disabled:opacity-60"
                           >
-                            Submit
+                            {isSubmitting ? "Deploying..." : "Submit"}
                           </button>
                         </div>
+
+                        {submitError && (
+                          <p className="text-sm text-red-400">{submitError}</p>
+                        )}
                       </form>
                     ) : (
                       <div className="space-y-3 text-center">
@@ -144,6 +180,14 @@ export default function Home({ onLogin, onSignup }: HomeProps) {
                     )}
                 </div>
             </section>
+
+            {deployment && (
+              <Pop
+                projectId={deployment.projectId}
+                url={deployment.url}
+                onClose={() => setDeployment(null)}
+              />
+            )}
         </>
     );
 };
