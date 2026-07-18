@@ -10,7 +10,6 @@ export default function Signup() {
     const t = window.setTimeout(() => setEntered(true), 40);
     return () => window.clearTimeout(t);
   }, []);
-  
 
   useEffect(() => {
     if (!isLoaded) return;
@@ -97,4 +96,3 @@ export default function Signup() {
     </section>
   );
 }
-
